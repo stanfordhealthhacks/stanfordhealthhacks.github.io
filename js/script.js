@@ -73,18 +73,21 @@
   }else{
     document.querySelectorAll("section.content,.dna-bridge,.vessel-divider").forEach(function(section){section.classList.add("in-view")});
   }
-  var hero=document.querySelector(".hero"),hackResult=document.querySelector(".hack-result"),eventStrip=document.querySelector(".event-strip"),titleEcg=document.querySelector(".title-ecg"),buildCircle=document.querySelector(".build-circle"),ticking=false;
+  var hero=document.querySelector(".hero"),hackResult=document.querySelector(".hack-result"),eventStrip=document.querySelector(".event-strip"),titleEcg=document.querySelector(".title-ecg"),buildCircle=document.querySelector(".build-circle"),powerContact=document.querySelector(".power-contact"),ticking=false;
   var revealLines=["Build the unexpected","Health is a team sport","Prototype the possible"];
   var revealIndex=-1,revealArmed=true;
   function syncEcgPowerLine(){
     if(!titleEcg||!buildCircle)return;
-    titleEcg.style.removeProperty("width");
+    titleEcg.style.removeProperty("--ecg-width");
     var ecgRect=titleEcg.getBoundingClientRect(),circleRect=buildCircle.getBoundingClientRect();
-    var targetX=circleRect.left+2;
+    var contactRect=powerContact?powerContact.getBoundingClientRect():circleRect;
+    var targetX=powerContact?contactRect.left+(contactRect.width/2):circleRect.left+2;
     var dynamicWidth=Math.floor(targetX-ecgRect.left);
     var maxWidth=Math.max(40,window.innerWidth-ecgRect.left-18);
     dynamicWidth=Math.max(40,Math.min(dynamicWidth,maxWidth));
+    var cycleSeconds=Math.max(2.8,Math.min(5.6,dynamicWidth/95));
     titleEcg.style.setProperty("--ecg-width",dynamicWidth+"px");
+    hero.style.setProperty("--power-cycle",cycleSeconds.toFixed(2)+"s");
   }
   function breakHero(){
     var rect=hero.getBoundingClientRect(),distance=Math.min(hero.offsetHeight*.58,560);
