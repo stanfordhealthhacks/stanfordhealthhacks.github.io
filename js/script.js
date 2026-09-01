@@ -73,9 +73,19 @@
   }else{
     document.querySelectorAll("section.content,.dna-bridge,.vessel-divider").forEach(function(section){section.classList.add("in-view")});
   }
-  var hero=document.querySelector(".hero"),hackResult=document.querySelector(".hack-result"),eventStrip=document.querySelector(".event-strip"),ticking=false;
+  var hero=document.querySelector(".hero"),hackResult=document.querySelector(".hack-result"),eventStrip=document.querySelector(".event-strip"),titleEcg=document.querySelector(".title-ecg"),buildCircle=document.querySelector(".build-circle"),ticking=false;
   var revealLines=["Build the unexpected","Health is a team sport","Prototype the possible"];
   var revealIndex=-1,revealArmed=true;
+  function syncEcgPowerLine(){
+    if(!titleEcg||!buildCircle)return;
+    titleEcg.style.removeProperty("width");
+    var ecgRect=titleEcg.getBoundingClientRect(),circleRect=buildCircle.getBoundingClientRect();
+    var targetX=circleRect.left+2;
+    var dynamicWidth=Math.floor(targetX-ecgRect.left);
+    var maxWidth=Math.max(40,window.innerWidth-ecgRect.left-18);
+    dynamicWidth=Math.max(40,Math.min(dynamicWidth,maxWidth));
+    titleEcg.style.setProperty("--ecg-width",dynamicWidth+"px");
+  }
   function breakHero(){
     var rect=hero.getBoundingClientRect(),distance=Math.min(hero.offsetHeight*.58,560);
     var progress=Math.max(0,Math.min(1,-rect.top/distance));
@@ -98,9 +108,11 @@
     hero.style.setProperty("--result-x",resultX+"px");
     hero.style.setProperty("--result-y",resultY+"px");
     hero.style.setProperty("--break",progress.toFixed(3));
+    syncEcgPowerLine();
     ticking=false;
   }
   window.addEventListener("scroll",function(){if(!ticking){requestAnimationFrame(breakHero);ticking=true}},{passive:true});
   window.addEventListener("resize",breakHero);
+  window.addEventListener("load",breakHero);
   breakHero();
 })();
